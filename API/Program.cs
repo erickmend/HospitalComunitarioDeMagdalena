@@ -47,7 +47,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<IApplicationUserService, ApplicationUserService>();
-//builder.Services.AddTransient<ITermsAndConditionsService<TermsAndConditionsDTO>, TermsAndConditionsService>();
+builder.Services.AddTransient<IEquiposService, EquipoService>();
 
 var app = builder.Build();
 

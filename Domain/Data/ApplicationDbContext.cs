@@ -20,7 +20,8 @@ namespace Domain.Data
         {
         }
 
-        public DbSet<TermsAndConditions> TermsAndConditions { get; set; }
+        public DbSet<Mantenimiento> Mantenimientos { get; set; }
+        public DbSet<EquipoMedico> EquiposMedicos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
