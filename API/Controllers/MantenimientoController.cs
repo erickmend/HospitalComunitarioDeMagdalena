@@ -30,7 +30,7 @@ namespace API.Controllers
             return StatusCode(serviceResponse.StatusCode, serviceResponse);
         }
 
-        [HttpPost]
+        [HttpPost("{equipoId}")]
         public async Task<IActionResult> PostAsync(int equipoId, MantenimientoDTO dto)
         {
             var serviceResponse = await _service.PostMantenimiento(equipoId, dto);

@@ -1,0 +1,130 @@
+﻿@page "/EditarMantenimiento/{id}"
+
+@using Core.APP_Services
+@using Domain.DTOs.ApplicationUser
+@using Domain.DTOs.Authentication
+@using Domain.Interfaces.APP_Services
+@using WebApp.Authentication
+@inject IMantenimientoService service
+@inject IEquipoService equipoService
+@inject IJSRuntime js
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navManager
+
+<EditForm Model="@Input">
+    <DataAnnotationsValidator />
+    <div class="row">
+        <div class="col-lg-4 offset-lg-4 pt-4 pb-4 border">
+            <div class="mb-3 text-center">
+                <h3>Mantenimiento</h3>
+            </div>
+
+@*                        <div class="mb-3">
+                <label>Equipo</label>
+                <InputDate placeholder="" class="form-control" @bind-Value="equipos.NombreDelEquipo" hidden> </InputDate>
+            </div>*@
+            
+            <div class="mb-3">
+                <label>Tipo de mantenimiento</label>
+                <InputText placeholder="" class="form-control" @bind-Value="Input.TipoDeMtto"> </InputText>
+                <ValidationMessage For="@(()=> Input.TipoDeMtto)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Observaciones</label>
+                <InputText placeholder="" class="form-control" @bind-Value="Input.Observaciones"> </InputText>
+                <ValidationMessage For="@(()=> Input.Observaciones)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Responsable</label>
+                <InputText placeholder="" class="form-control" @bind-Value="Input.Responsable"> </InputText>
+                <ValidationMessage For="@(()=> Input.Responsable)" />
+            </div>
+
+
+            <div class="mb-3">
+                <label>Fecha</label>
+                <InputDate placeholder="" class="form-control" @bind-Value="Input.FechaDeMtto"> </InputDate>
+                <ValidationMessage For="@(()=> Input.FechaDeMtto)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Equipo</label>
+                <input class="form-control" disabled placeholder="@equipos.NombreDelEquipo" />
+            </div>
+
+
+
+            <div class="mb-3 d-grid gap-2">
+                <button @onclick="Authenticate" class="btn btn-primary">Editar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+
+@code {
+
+    [Parameter]
+    public string id { get; set; }
+
+
+    private MantenimientoDTO Input = new MantenimientoDTO();
+     EquipoMedico  equipos = new  EquipoMedico ();
+
+    protected override async Task OnInitializedAsync()
+    {
+        int idInt = int.Parse(id);
+        var response = await service.Get(idInt);
+        if (!response.Success)
+        {
+            await js.ShowAlert("Error", response.Errors.MessageSpanish);
+            return;
+        }
+        Mantenimiento entity = JsonObjectToDto<Mantenimiento>.GetDTO(response.Result);
+        
+        
+        var responseEquipos = await equipoService.Get(entity.EquipoMedicoId);
+        if (!responseEquipos.Success)
+        {
+            return;
+        }
+        equipos = JsonObjectToDto<EquipoMedico>.GetDTO(responseEquipos.Result);
+
+        Input = new MantenimientoDTO
+        {
+                FechaDeMtto = entity.FechaDeMtto,
+                Observaciones = entity.Observaciones,
+                Responsable = entity.Responsable,
+                TipoDeMtto = entity.TipoDeMtto
+        };
+
+    }
+
+    private async Task Authenticate()
+    {
+        if (!ModelValidator.ValidateModel(Input))
+            return;
+
+        
+        int idInt = int.Parse(id);
+        var response = await service.Update(idInt, Input);
+        if (!response.Success)
+        {
+            await js.ShowAlert("Error", $"Hubo un error en la transacción");
+            return;
+        }
+        else
+        {
+            await js.ShowAlert("Exito", $"Se ha editado el equipo");
+        }
+
+
+        navManager.NavigateTo("/Mantenimientos", true);
+    }
+    void ToIndex()
+    {
+        navManager.NavigateTo($"/", true);
+    }
+}

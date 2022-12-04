@@ -17,5 +17,9 @@ namespace Domain.DTOs.Mantenimiento
         public string Observaciones { get; set; } = string.Empty;
         [Required(ErrorMessage = "El campo es requerido")]
         public string Responsable { get; set; } = string.Empty;
+
+
+        [Required(ErrorMessage = "El campo es requerido")]
+        public int EquipoId { get; set; }
     }
 }

@@ -1,0 +1,115 @@
+﻿@page "/crearMantenimiento"
+
+@using Core.APP_Services
+@using Domain.DTOs.ApplicationUser
+@using Domain.DTOs.Authentication
+@using Domain.Interfaces.APP_Services
+@using WebApp.Authentication
+@inject IMantenimientoService service
+@inject IEquipoService equipoService
+@inject IJSRuntime js
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navManager
+
+<EditForm Model="@Input">
+    <DataAnnotationsValidator />
+    <div class="row">
+        <div class="col-lg-4 offset-lg-4 pt-4 pb-4 border">
+            <div class="mb-3 text-center">
+                <h3>Mantenimiento</h3>
+            </div>
+            <div class="mb-3">
+                <label>Tipo de mantenimiento</label>
+                <InputText placeholder="" class="form-control" @bind-Value="Input.TipoDeMtto"> </InputText>
+                <ValidationMessage For="@(()=> Input.TipoDeMtto)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Observaciones</label>
+                <InputText placeholder="" class="form-control" @bind-Value="Input.Observaciones"> </InputText>
+                <ValidationMessage For="@(()=> Input.Observaciones)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Responsable</label>
+                <InputText placeholder="" class="form-control" @bind-Value="Input.Responsable"> </InputText>
+                <ValidationMessage For="@(()=> Input.Responsable)" />
+            </div>
+  
+
+            <div class="mb-3">
+                <label>Fecha</label>
+                <InputDate placeholder="" class="form-control" @bind-Value="Input.FechaDeMtto"> </InputDate>
+                <ValidationMessage For="@(()=> Input.FechaDeMtto)" />
+            </div>
+
+
+            <div class="mb-3">
+                <label>Equipo</label>
+                <InputSelect  class="form-control" @bind-Value="Input.EquipoId">
+                    <option selected value="">None</option>
+                    @foreach (var dept in equipos)
+                    {
+                        <option value="@dept.Id">@dept.NombreDelEquipo</option>
+                    }
+                </InputSelect>
+
+                <ValidationMessage For="@(()=> Input.EquipoId)" />
+            </div>
+
+
+            <div class="mb-3 d-grid gap-2">
+                <button @onclick="Authenticate" class="btn btn-primary">Crear</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+
+@code {
+
+
+    private MantenimientoDTO Input = new MantenimientoDTO();
+    private int equipoId;
+    List<EquipoMedico> equipos = new List<EquipoMedico>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await equipoService.Get();
+        if (!response.Success)
+        {
+            return;
+        }
+        equipos = JsonObjectToDto<List<EquipoMedico>>.GetDTO(response.Result);
+    }
+    
+    private async Task Authenticate()
+    {
+        if (!ModelValidator.ValidateModel(Input))
+            return;
+
+        if (Input.EquipoId == 0)
+        {
+            await js.ShowAlert("Error", "Debe seleccionar un equipo");
+            return;
+        }
+        
+        var response = await service.Create(Input.EquipoId, Input);
+        if (!response.Success)
+        {
+            await js.ShowAlert("Error", $"Hubo un error en la transacción");
+            return;
+        }
+        else
+        {
+            await js.ShowAlert("Exito", $"Se ha creado el equipo");
+        }
+
+
+        navManager.NavigateTo("/Mantenimientos", true);
+    }
+    void ToIndex()
+    {
+        navManager.NavigateTo($"/", true);
+    }
+}
