@@ -1,0 +1,86 @@
+﻿@page "/login"
+
+@using Core.APP_Services
+@using Domain.DTOs.ApplicationUser
+@using Domain.DTOs.Authentication
+@using Domain.Interfaces.APP_Services
+@using WebApp.Authentication
+@inject IAccountService userAccountService
+@inject IJSRuntime js
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navManager
+<link href="css/MainStyle.css" rel="stylesheet" />
+
+
+<div class="row mt-5">
+    <div class="col-sm-1 col-md-2 col-lg-3 col-xl-4">
+        <img src="images/taco.png" width="100" />
+    </div>
+
+    <div class="col-sm-10 col-md-8 col-lg-6 col-xl-4">
+        <div id="mainContainer">
+            <br />
+            <br />
+            <EditForm Model="@Input"  >
+                <DataAnnotationsValidator />
+
+                <h1 class="customTitle">Inicia sesión</h1>
+                <br />
+                <h1 class="customText">Escribe tu correo electrónico y contraseña</h1>
+                <br />
+                <div class="form-body">
+                    <div class="form-group ml-5">
+                        <InputText placeholder="Correo electrónico" class="customInput" @bind-Value="Input.Email"> </InputText>
+                        <ValidationMessage For="@(()=> Input.Email)" />
+                    </div>
+                    <br />
+
+                    <div class="form-group ml-5">
+                        <InputText type="password" placeholder="Contraseña" class="customInput" @bind-Value="Input.Password"> </InputText>
+                        <ValidationMessage For="@(()=> Input.Password)" />
+                    </div>
+                </div>
+                <br />
+                <br />
+                <button class="button_Orange customTextButtons" @onclick="@Authenticate">Iniciar sesión</button>
+            </EditForm>
+            <br />
+        </div>
+    </div>
+
+    <div class="col-sm-1 col-md-2 col-lg-3 col-xl-4" style="text-align:right">
+    </div>
+</div>
+
+
+@code {
+
+
+    private LoginPost Input = new LoginPost();
+
+    private async Task Authenticate()
+    {
+        if (!ModelValidator.ValidateModel(Input))
+            return;
+            
+        var response = await userAccountService.Login(Input);
+        if (!response.Success)
+        {
+            await js.InvokeVoidAsync("alert", response.Errors.MessageSpanish);
+            return;
+        }
+        LoginPost dto = JsonObjectToDto<LoginPost>.GetDTO(response.Result);
+
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        await customAuthStateProvider.UpdateAuthenticationState(new UserSession
+            {
+                UserName = dto.Email,
+                Role = dto.Role
+            });
+        navManager.NavigateTo("/", true);
+    }
+    void ToIndex()
+    {
+        navManager.NavigateTo($"/", true);
+    }
+}

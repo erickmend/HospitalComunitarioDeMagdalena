@@ -24,8 +24,8 @@ namespace Core.General_Services
             //    return new Response(false, "MethodNull", 402, null);
             //}
 
-            //string clientUrl = "https://localhost:7013/";
-            string clientUrl = "https://api-tacoshare.azurewebsites.net/";
+            string clientUrl = "https://localhost:7292/";
+            //string clientUrl = "https://api-tacoshare.azurewebsites.net/";
             if (!string.IsNullOrEmpty(client))
             {
                 clientUrl = client;
