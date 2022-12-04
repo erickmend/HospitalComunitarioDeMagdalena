@@ -1,4 +1,5 @@
 ﻿using Domain.Data;
+using Domain.DTOs.EquipoMedico;
 using Domain.DTOs.Responses;
 using Domain.Entities;
 using Domain.Enums;
@@ -93,13 +94,13 @@ namespace Core.API_Services
             }
         }
 
-        public async Task<Response<EquipoMedico>> PostEquipo(EquipoMedico equipo)
+        public async Task<Response<EquipoMedico>> PostEquipo(EquipoMedicoDTO dto)
         {
             InternalStatusCodes internalStatus;
             try
             {
 
-                equipo.CreateEntity();
+                EquipoMedico equipo = new EquipoMedico(dto);
                 await _dbContext.EquiposMedicos.AddAsync(equipo);
                 int response = await _dbContext.SaveChangesAsync();
                 if (response == 0)
@@ -117,7 +118,7 @@ namespace Core.API_Services
             }
         }
 
-        public async Task<Response<EquipoMedico>> PutEquipo(int id, EquipoMedico equipo)
+        public async Task<Response<EquipoMedico>> PutEquipo(int id, EquipoMedicoDTO dto)
         {
             InternalStatusCodes internalStatus;
             try
@@ -129,7 +130,7 @@ namespace Core.API_Services
                 }
 
                 var entity = (EquipoMedico)entityResponse.Entity;
-                entity.Edit(equipo);
+                entity.Edit(dto);
 
                 int response = await _dbContext.SaveChangesAsync();
                 if (response == 0)
@@ -138,7 +139,7 @@ namespace Core.API_Services
                     return new Response<EquipoMedico>(internalStatus, null);
                 }
                 internalStatus = InternalStatusCodes.UpdateEntity_Ok;
-                return new Response<EquipoMedico>(internalStatus, equipo, equipo);
+                return new Response<EquipoMedico>(internalStatus, entity, entity);
             }
             catch
             {

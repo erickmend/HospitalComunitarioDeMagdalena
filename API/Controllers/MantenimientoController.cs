@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain.DTOs.Mantenimiento;
+using Domain.Entities;
 using Domain.Interfaces.API_Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,14 +31,14 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync(int equipoId, Mantenimiento dto)
+        public async Task<IActionResult> PostAsync(int equipoId, MantenimientoDTO dto)
         {
             var serviceResponse = await _service.PostMantenimiento(equipoId, dto);
             return StatusCode(serviceResponse.StatusCode, serviceResponse);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAsync(int id, Mantenimiento dto)
+        public async Task<IActionResult> PutAsync(int id, MantenimientoDTO dto)
         {
             var serviceResponse = await _service.PutMantenimiento(id, dto);
             return StatusCode(serviceResponse.StatusCode, serviceResponse);

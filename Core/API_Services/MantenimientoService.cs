@@ -1,4 +1,5 @@
 ﻿using Domain.Data;
+using Domain.DTOs.Mantenimiento;
 using Domain.DTOs.Responses;
 using Domain.Entities;
 using Domain.Enums;
@@ -67,20 +68,19 @@ namespace Core.API_Services
             }
         }
 
-        public async Task<Response<Mantenimiento>> PostMantenimiento(int EquipoId, Mantenimiento mantenimiento)
+        public async Task<Response<Mantenimiento>> PostMantenimiento(int EquipoId, MantenimientoDTO dto)
         {
             InternalStatusCodes internalStatus;
             try
             {
                 var equipoResponse = await _equiposService.GetEquipo(EquipoId);
-                if (!equipoResponse.Success || equipoResponse.Entity == null)
+                if (equipoResponse==null || equipoResponse.Result==null || !equipoResponse.Success || equipoResponse.Entity == null)
                 {
                     internalStatus = InternalStatusCodes.CreateEntity_ERROR;
                     return new Response<Mantenimiento>(internalStatus, null);
                 }
 
-                
-                mantenimiento.CreateEntity();
+                Mantenimiento mantenimiento = new Mantenimiento(dto);
                 equipoResponse.Result.Mantenimientos.Add(mantenimiento);
                 mantenimiento.EquipoMedicoId = EquipoId;
                 
@@ -101,7 +101,7 @@ namespace Core.API_Services
             }
         }
 
-        public async Task<Response<Mantenimiento>> PutMantenimiento(int id, Mantenimiento mantenimiento)
+        public async Task<Response<Mantenimiento>> PutMantenimiento(int id, MantenimientoDTO mantenimiento)
         {
             {
                 InternalStatusCodes internalStatus;
@@ -123,7 +123,7 @@ namespace Core.API_Services
                         return new Response<Mantenimiento>(internalStatus, null);
                     }
                     internalStatus = InternalStatusCodes.UpdateEntity_Ok;
-                    return new Response<Mantenimiento>(internalStatus, mantenimiento, mantenimiento);
+                    return new Response<Mantenimiento>(internalStatus, entity, mantenimiento);
                 }
                 catch
                 {

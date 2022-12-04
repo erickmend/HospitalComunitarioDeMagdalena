@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.DTOs.EquipoMedico;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,30 @@ namespace Domain.Entities
 {
     public class EquipoMedico :Entity
     {
+        public EquipoMedico()
+        {
+            
+        }
+        public EquipoMedico(EquipoMedicoDTO dto)
+        {
+            NumDeIdentificacion = dto.NumDeIdentificacion;
+            NombreDelEquipo = dto.NombreDelEquipo;
+            NombreDelCuadroBasico = dto.NombreDelCuadroBasico;
+            ClaveDelCuadroBasico = dto.ClaveDelCuadroBasico;
+            Fabricante = dto.Fabricante;
+            Modelo = dto.Modelo;
+            NumeroDeSerie = dto.NumeroDeSerie;
+            UbicacionDelEquipo = dto.UbicacionDelEquipo;
+            EstatusOperativo = dto.EstatusOperativo;
+            FechaInicialDeRegistro = dto.FechaInicialDeRegistro;
+            InclusionDeMantenimiento = dto.InclusionDeMantenimiento;
+            PropioOComodato = dto.PropioOComodato;
+
+            Mantenimientos = new List<Mantenimiento>();
+
+            CreateEntity();
+        }
+        
         public string NumDeIdentificacion { get; set; } = string.Empty;
         public string NombreDelEquipo { get; set; } = string.Empty;
         public string NombreDelCuadroBasico { get; set; } = string.Empty;
@@ -24,7 +49,7 @@ namespace Domain.Entities
 
         public List<Mantenimiento> Mantenimientos { get; set; } = new List<Mantenimiento>();
         
-        public void Edit(EquipoMedico dto)
+        public void Edit(EquipoMedicoDTO dto)
         {
             NumDeIdentificacion = dto.NumDeIdentificacion;
             NombreDelEquipo = dto.NombreDelEquipo;
@@ -38,6 +63,8 @@ namespace Domain.Entities
             FechaInicialDeRegistro = dto.FechaInicialDeRegistro;
             InclusionDeMantenimiento = dto.InclusionDeMantenimiento;
             PropioOComodato = dto.PropioOComodato;
+
+            EditEntity();
         }
     }
 }

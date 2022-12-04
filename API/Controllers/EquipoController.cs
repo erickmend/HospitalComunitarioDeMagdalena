@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain.DTOs.EquipoMedico;
+using Domain.Entities;
 using Domain.Interfaces.API_Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,14 +31,14 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync(EquipoMedico dto)
+        public async Task<IActionResult> PostAsync(EquipoMedicoDTO dto)
         {
             var serviceResponse = await _service.PostEquipo(dto);
             return StatusCode(serviceResponse.StatusCode, serviceResponse);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAsync(int id, EquipoMedico dto)
+        public async Task<IActionResult> PutAsync(int id, EquipoMedicoDTO dto)
         {
             var serviceResponse = await _service.PutEquipo(id, dto);
             return StatusCode(serviceResponse.StatusCode, serviceResponse);
