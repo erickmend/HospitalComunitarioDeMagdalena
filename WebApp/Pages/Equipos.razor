@@ -1,0 +1,304 @@
+﻿@page "/Equipos"
+@using Radzen;
+@using Radzen.Blazor;
+@using System.Collections.Generic;
+@using System.Reflection;
+@using System.ComponentModel.DataAnnotations;
+@inject IEquipoService Service
+@inject IJSRuntime js
+
+@inject NavigationManager NavigationManager;
+
+@*@attribute [Authorize]*@
+
+<link href="/css/alerts.css" rel="stylesheet" />
+
+<style>
+    .rightContainer {
+        text-align: right;
+    }
+
+    .cancelbuttonpink {
+        background-color: #f27c7c;
+        color: white;
+    }
+
+    .savebuttongreen {
+        background-color: #5bb154;
+        color: white;
+    }
+
+    .grayText {
+        color: #aaa8a8;
+    }
+
+    .blueText {
+        color: #18445b;
+        vertical-align: central;
+    }
+
+    .iconStep {
+        width: 40px;
+        height: 40px;
+    }
+</style>
+
+<div class="container-fluid ">
+
+    <section id="basic-form-layouts">
+        <div class="row match-height">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-content collapse show">
+                        <div class="card-body">
+                            <div class="card-text">
+                                <h1>Lista de equipos</h1>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <div class="d-flex justify-content-start">
+
+                                        <div class="mr-3">
+                                            @*<input placeholder="No. Reservación" @onchange="onChangeReservationNumber" class="form-control" />*@
+                                        </div>
+
+                                        <div class="mr-3">
+                                            @*<input placeholder="Nombre" @onchange="onChangeName" class="form-control" />*@
+                                        </div>
+
+                                        <div class="mr-3">
+                                            @*<input type="date" value="@InitialState.ToString("yyyy-MM-dd")" @onchange="onChangeInitDate" class="form-control" />*@
+                                        </div>
+
+                                        <div class="mr-3">
+                                            @*<input type="date" value="@FinalState.ToString("yyyy-MM-dd")" @onchange="onChangeFinalDate" class="form-control" />*@
+                                        </div>
+                                        <div class="mr-3"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div>
+                                        <div>
+                                            <div>
+                                                <button  class="form-control" @onclick="Crear">Crear</button>
+                                            </div>
+                                            <input placeholder="Buscar" @onchange="onChangeSearch" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+</div>
+
+@if (EquiposList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="@EquiposList">
+        <DataAnnotationsValidator />
+        <div class="container-fluid ">
+            <section id="basic-form-layouts">
+                <div class="row match-height mt-3">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-content collapse show">
+                                <div class="card-body">
+                                    <RadzenDataGrid @ref="grid" Data="@EquiposList" TItem="EquipoMedico" AllowPaging="true" PageSize="10">
+                                        <Columns>
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="NumDeIdentificacion" TextAlign="TextAlign.Center">
+                                                <Template Context="Item">
+                                                    <label>@Item.NumDeIdentificacion</label>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="NombreDelEquipo" TextAlign="TextAlign.Center">
+                                                <Template Context="Item">
+                                                    <label>@Item.NombreDelEquipo</label>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="NombreDelCuadroBasico" TextAlign="TextAlign.Center">
+                                                <Template Context="Item">
+                                                    <label>@Item.NombreDelCuadroBasico</label>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="ClaveDelCuadroBasico" TextAlign="TextAlign.Center">
+                                                <Template Context="Item">
+                                                    <label>@Item.ClaveDelCuadroBasico</label>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="Fabricante" TextAlign="TextAlign.Center">
+                                                <Template Context="Item">
+                                                    <label>@Item.Fabricante</label>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="Modelo" TextAlign="TextAlign.Center">
+                                                <Template Context="Item">
+                                                    <label>@Item.Modelo</label>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="NumeroDeSerie" TextAlign="TextAlign.Center">
+                                                <Template Context="Item">
+                                                    <label>@Item.NumeroDeSerie</label>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="UbicacionDelEquipo" TextAlign="TextAlign.Center">
+                                                <Template Context="Item">
+                                                    <label>@Item.UbicacionDelEquipo</label>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="EstatusOperativo" TextAlign="TextAlign.Center">
+                                                <Template Context="Item">
+                                                    <label>@Item.EstatusOperativo</label>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="FechaInicialDeRegistro" TextAlign="TextAlign.Center">
+                                                <Template Context="Item">
+                                                    <label>@Item.FechaInicialDeRegistro</label>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="InclusionDeMantenimiento" TextAlign="TextAlign.Center">
+                                                <Template Context="Item">
+                                                    <label>@Item.InclusionDeMantenimiento</label>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="PropioOComodato" TextAlign="TextAlign.Center">
+                                                <Template Context="Item">
+                                                    <label>@Item.PropioOComodato</label>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+ 
+
+                                          @*  <RadzenDataGridColumn TItem="LasPalomas.Domain.Entities.Reserva" Title="Check-In" TextAlign="TextAlign.Center">
+                                                <Template Context="Item">
+                                                    <label>@Item.ArrivalDate.ToString("dd/MM/yyyy tt")</label>
+                                                </Template>
+                                            </RadzenDataGridColumn>*@
+
+
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="Acciones" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+                                                <Template Context="DynamicText">
+                                                    <RadzenSplitButton Icon="settings">
+                                                        <ChildContent>
+                                                            <RadzenSplitButtonItem Text="Ver" @onclick="()=>Ver(DynamicText)"></RadzenSplitButtonItem>
+                                                            <RadzenSplitButtonItem Text="Editar" @onclick="()=>Edit(DynamicText)"></RadzenSplitButtonItem>
+                                                            <RadzenSplitButtonItem Text="Eliminar" @onclick="()=>Delete(DynamicText)"></RadzenSplitButtonItem>
+                                                        </ChildContent>
+ 
+                                                    </RadzenSplitButton>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                        </Columns>
+                                    </RadzenDataGrid>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </EditForm>
+}
+
+@code {
+    RadzenDataGrid<Domain.Entities.EquipoMedico> grid;
+
+    private List<EquipoMedico> EquiposList = new List<EquipoMedico>();
+    private List<EquipoMedico> EquiposList2 = new List<EquipoMedico>();
+    private EquipoMedico EquipoInput = new EquipoMedico();
+
+    private string search = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await Service.Get();
+        if (!response.Success)
+        {
+            return;
+        }
+        List<EquipoMedico> dto = JsonObjectToDto<List<EquipoMedico>>.GetDTO(response.Result);
+        EquiposList = dto;
+        EquiposList2 = dto;
+    }
+    void Ver(EquipoMedico dto)
+    {
+        NavigationManager.NavigateTo($"/detalleEquipo/{dto.Id}", true);
+    }
+    void Edit(EquipoMedico dto)
+    {
+        NavigationManager.NavigateTo($"/editarEquipo/{dto.Id}", true);
+    }
+    async void Delete(EquipoMedico dto)
+    {
+        var obj = await js.QuestionAlert("Atención", $"¿Estas seguro de eliminar el campo?");
+        if (obj == null)
+        {
+            return;
+        }
+        var response = await Service.Delete(dto.Id);
+        if (!response.Success)
+        {
+            await js.ShowAlert("Atención", response.Errors.MessageSpanish);
+            return;
+        }else{
+            await js.ShowAlert("Atención", response.Message.MessageSpanish);
+            NavigationManager.NavigateTo($"/Equipos", true);
+        }
+    }
+    void Crear( )
+    {
+        NavigationManager.NavigateTo($"/CrearEquipo", true);
+    }
+
+    private void onChangeSearch(Microsoft.AspNetCore.Components.ChangeEventArgs args)
+    {
+        if (EquiposList == null || EquiposList2 == null)
+            return;
+        try
+        {
+            search = (string)args.Value;
+            if (!string.IsNullOrEmpty(search))
+            {
+                EquiposList = EquiposList2.FindAll(x => x.NumDeIdentificacion.ToUpper().Contains(search.ToUpper())
+                || x.NombreDelEquipo.ToUpper().Contains(search.ToUpper())
+                || x.NombreDelCuadroBasico.ToUpper().Contains(search.ToUpper())
+                || x.ClaveDelCuadroBasico.ToUpper().Contains(search.ToUpper())
+                //|| x..ToUpper().Contains(search.ToUpper())
+                );
+            }
+            else
+            {
+                EquiposList = EquiposList2;
+            }
+        }
+        catch
+        {
+
+        }
+
+    }
+ 
+ 
+
+  
+}
+

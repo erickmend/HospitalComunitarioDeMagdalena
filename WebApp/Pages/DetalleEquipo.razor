@@ -1,0 +1,155 @@
+﻿@page "/detalleEquipo/{id}"
+
+@using Core.APP_Services
+@using Domain.DTOs.ApplicationUser
+@using Domain.DTOs.Authentication
+@using Domain.Interfaces.APP_Services
+@using WebApp.Authentication
+@inject IEquipoService service
+@inject IJSRuntime js
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navManager
+
+<EditForm Model="@Input">
+    <DataAnnotationsValidator />
+    <div class="row">
+        <div class="col-lg-4 offset-lg-4 pt-4 pb-4 border">
+            <div class="mb-3 text-center">
+                <h3>Equipo Médico</h3>
+            </div>
+            <div class="mb-3">
+                <label>Número de identificación</label>
+                <InputText placeholder="" disabled class="form-control" @bind-Value="Input.NumDeIdentificacion"> </InputText>
+                <ValidationMessage For="@(()=> Input.NumDeIdentificacion)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Nombre del equipo</label>
+                <InputText placeholder="" disabled class="form-control" @bind-Value="Input.NombreDelEquipo"> </InputText>
+                <ValidationMessage For="@(()=> Input.NombreDelEquipo)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Nombre del cuadro básico</label>
+                <InputText placeholder="" disabled class="form-control" @bind-Value="Input.NombreDelCuadroBasico"> </InputText>
+                <ValidationMessage For="@(()=> Input.NombreDelCuadroBasico)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Clave del cuadro básico</label>
+                <InputText placeholder="" disabled class="form-control" @bind-Value="Input.ClaveDelCuadroBasico"> </InputText>
+                <ValidationMessage For="@(()=> Input.ClaveDelCuadroBasico)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Fabricante</label>
+                <InputText placeholder="" disabled class="form-control" @bind-Value="Input.Fabricante"> </InputText>
+                <ValidationMessage For="@(()=> Input.Fabricante)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Modelo</label>
+                <InputText placeholder="" disabled class="form-control" @bind-Value="Input.Modelo"> </InputText>
+                <ValidationMessage For="@(()=> Input.Modelo)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Numero de serie</label>
+                <InputText placeholder="" disabled class="form-control" @bind-Value="Input.NumeroDeSerie"> </InputText>
+                <ValidationMessage For="@(()=> Input.NumeroDeSerie)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Ubicación del equipo</label>
+                <InputText placeholder="" disabled class="form-control" @bind-Value="Input.UbicacionDelEquipo"> </InputText>
+                <ValidationMessage For="@(()=> Input.UbicacionDelEquipo)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Estatus operativo</label>
+                <InputText placeholder="" disabled class="form-control" @bind-Value="Input.EstatusOperativo"> </InputText>
+                <ValidationMessage For="@(()=> Input.EstatusOperativo)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Fecha inicial del registro</label>
+                <InputDate placeholder="" disabled class="form-control" @bind-Value="Input.FechaInicialDeRegistro"> </InputDate>
+                <ValidationMessage For="@(()=> Input.FechaInicialDeRegistro)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Inclusion de mantenimiento</label>
+                <InputText placeholder="" disabled class="form-control" @bind-Value="Input.InclusionDeMantenimiento"> </InputText>
+                <ValidationMessage For="@(()=> Input.InclusionDeMantenimiento)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Propiop o comodado</label>
+                <InputText placeholder="" disabled class="form-control" @bind-Value="Input.PropioOComodato"> </InputText>
+                <ValidationMessage For="@(()=> Input.PropioOComodato)" />
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+
+@code {
+
+    [Parameter]
+    public string id { get; set; }
+
+    private EquipoMedicoDTO Input = new EquipoMedicoDTO();
+
+    protected override async Task OnInitializedAsync()
+    {
+        int idInt = int.Parse(id);
+        var response = await service.Get(idInt);
+        if (!response.Success)
+        {
+            await js.ShowAlert("Error", response.Errors.MessageSpanish);
+            return;
+        }
+        EquipoMedico entity = JsonObjectToDto<EquipoMedico>.GetDTO(response.Result);
+        Input = new EquipoMedicoDTO
+            {
+                ClaveDelCuadroBasico = entity.ClaveDelCuadroBasico,
+                EstatusOperativo = entity.EstatusOperativo,
+                Fabricante = entity.Fabricante,
+                FechaInicialDeRegistro = entity.FechaInicialDeRegistro,
+                InclusionDeMantenimiento = entity.InclusionDeMantenimiento,
+                Modelo = entity.Modelo,
+                NombreDelCuadroBasico = entity.NombreDelCuadroBasico,
+                NombreDelEquipo = entity.NombreDelEquipo,
+                NumeroDeSerie = entity.NumeroDeSerie,
+                NumDeIdentificacion = entity.NumDeIdentificacion,
+                PropioOComodato = entity.PropioOComodato,
+                UbicacionDelEquipo = entity.UbicacionDelEquipo,
+            };
+
+    }
+
+    private async Task Authenticate()
+    {
+        if (!ModelValidator.ValidateModel(Input))
+            return;
+        int idInt = int.Parse(id);
+
+        var response = await service.Update(idInt, Input);
+        if (!response.Success)
+        {
+            await js.ShowAlert("Error", $"Hubo un error en la transacción");
+            return;
+        }
+        else
+        {
+            await js.ShowAlert("Exito", $"Se ha editado el equipo");
+        }
+
+
+        navManager.NavigateTo("/Equipos", true);
+    }
+    void ToIndex()
+    {
+        navManager.NavigateTo($"/", true);
+    }
+}

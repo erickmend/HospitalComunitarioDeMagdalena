@@ -9,9 +9,31 @@
 @inject IJSRuntime js
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navManager
-<link href="css/MainStyle.css" rel="stylesheet" />
 
-
+   <EditForm Model="@Input"  >
+                <DataAnnotationsValidator />
+<div class="row">
+    <div class="col-lg-4 offset-lg-4 pt-4 pb-4 border">
+        <div class="mb-3 text-center">
+            <h3>LOGIN</h3>
+        </div>
+        <div class="mb-3">
+            <label>User Name</label>
+                <InputText placeholder="Correo electrónico" class="form-control" @bind-Value="Input.Email"> </InputText>
+            <ValidationMessage For="@(()=> Input.Email)" />
+        </div>
+        <div class="mb-3">
+            <label>Password</label>
+                <InputText type="password" placeholder="Contraseña" class="form-control" @bind-Value="Input.Password"> </InputText>
+            <ValidationMessage For="@(()=> Input.Password)" />
+        </div>
+        <div class="mb-3 d-grid gap-2">
+            <button @onclick="Authenticate" class="btn btn-primary">Login</button>
+        </div>
+    </div>
+</div>
+</EditForm>
+@*
 <div class="row mt-5">
     <div class="col-sm-1 col-md-2 col-lg-3 col-xl-4">
         <img src="images/taco.png" width="100" />
@@ -51,7 +73,7 @@
     <div class="col-sm-1 col-md-2 col-lg-3 col-xl-4" style="text-align:right">
     </div>
 </div>
-
+*@
 
 @code {
 
@@ -66,7 +88,9 @@
         var response = await userAccountService.Login(Input);
         if (!response.Success)
         {
-            await js.InvokeVoidAsync("alert", response.Errors.MessageSpanish);
+            //await js.InvokeVoidAsync("alert", response.Errors.MessageSpanish);
+            await js.ShowAlert("Error", $"Hubo un error en la transacción");
+            
             return;
         }
         LoginPost dto = JsonObjectToDto<LoginPost>.GetDTO(response.Result);

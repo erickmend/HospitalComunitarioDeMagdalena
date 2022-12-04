@@ -1,0 +1,48 @@
+﻿
+.swal-footer {
+	text-align: center;
+}
+
+.swal-button--confirm {
+	background-color: #002E6D;
+}
+.swal-button--cancel {
+	background-color: #59b3b1;
+	color:white
+}
+
+
+.rz-splitbutton .rz-button, .rz-splitbutton .rz-paginator-element {
+	background-color: #59b3b1;
+	border-color: #59b3b1;
+}
+.modal {
+	display: block !important; /* I added this to see the modal, you don't need this */
+}
+
+/* Important part */
+.modal-dialog {
+	overflow-y: initial !important
+}
+
+.modal-body {
+	height: 80vh;
+	overflow-y: auto;
+}
+
+.rz-datatable-thead th .rz-column-title, .rz-grid-table thead th .rz-column-title {
+	display: inline-block;
+	font-size: 14px;
+	text-transform: none;
+	color: #3a474d;
+	padding: 0 0 0.625rem 0.625rem;
+	font-weight: bold;
+}
+
+
+.close {
+	color: #727272;
+	font-size:50px;
+	text-align:right;
+	margin:10px;
+}
