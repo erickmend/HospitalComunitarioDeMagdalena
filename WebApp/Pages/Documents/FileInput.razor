@@ -1,0 +1,25 @@
+﻿@page "/documentacion"
+@inject IFileUpload service
+
+<BlazorInputFile.InputFile OnChange="HandleFileSelected"></BlazorInputFile.InputFile>
+
+@*<h1>Path: @path</h1>*@
+<img src="@imageSource" width="200" />
+@code {
+    string path = "";
+    private string? imageSource;
+    async Task HandleFileSelected(IFileListEntry[] files)
+    {
+        var file = files.FirstOrDefault();
+        if (file != null)
+        {
+            path = await service.Upload(file);
+           
+
+
+            var imageBytes = File.ReadAllBytes(path);
+            imageSource = Convert.ToBase64String(imageBytes);
+            imageSource = string.Format("data:image/png;base64,{0}", imageSource);
+        }
+    }
+}

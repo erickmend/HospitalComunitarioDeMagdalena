@@ -24,6 +24,7 @@ builder.Services.AddSingleton<IRequestorService, RequestorService>();
 builder.Services.AddSingleton<IAccountService, AccountService>();
 builder.Services.AddSingleton<IMantenimientoService, MantenimientoService>();
 builder.Services.AddSingleton<IEquipoService, EquipoService>();
+builder.Services.AddScoped<IFileUpload, FileUpload>();
 
 
 var app = builder.Build();
