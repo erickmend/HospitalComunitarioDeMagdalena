@@ -8,6 +8,7 @@
 @inject IDocumentService Service
 @inject IJSRuntime js
 @inject NavigationManager NavigationManager;
+@attribute [Authorize(Roles = "Admin")]
 
 @*<h1>Path: @path</h1>*@
 

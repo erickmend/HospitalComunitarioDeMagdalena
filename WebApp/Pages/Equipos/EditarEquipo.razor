@@ -9,6 +9,7 @@
 @inject IJSRuntime js
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navManager
+@attribute [Authorize(Roles = "Admin")]
 
 <EditForm Model="@Input">
     <DataAnnotationsValidator />
