@@ -1,0 +1,53 @@
+﻿@page "/DetalleDocumento/{id}"
+@inject IFileUpload service
+@using Radzen;
+@using Radzen.Blazor;
+@using System.Collections.Generic;
+@using System.Reflection;
+@using System.ComponentModel.DataAnnotations;
+@inject IDocumentService Service
+@inject IJSRuntime js
+@inject NavigationManager NavigationManager;
+
+
+
+<div class="row">
+    <div class="col-lg-4 offset-lg-4 pt-4 pb-4 border">
+        <div class="mb-3 text-center">
+            <h3>Detalle documento</h3>
+        </div>
+        <div class="mb-3">
+            <img src="@imageSource" width="500" />
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter]
+    public string id { get; set; }
+    private string? imageSource;
+
+    protected override async Task OnInitializedAsync()
+    {
+        int idInt = int.Parse(id);
+        var response = await Service.Get(idInt);
+        if (!response.Success)
+        {
+            await js.ShowAlert("Error", response.Errors.MessageSpanish);
+            return;
+        }
+        Documentacion entity = JsonObjectToDto<Documentacion>.GetDTO(response.Result);
+
+
+        var imageBytes = File.ReadAllBytes(entity.Path);
+        imageSource = Convert.ToBase64String(imageBytes);
+        imageSource = string.Format("data:image/png;base64,{0}", imageSource);
+
+    }
+ 
+
+
+  
+}

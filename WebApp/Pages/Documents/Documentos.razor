@@ -1,0 +1,206 @@
+﻿@page "/Documentos"
+@using Radzen;
+@using Radzen.Blazor;
+@using System.Collections.Generic;
+@using System.Reflection;
+@using System.ComponentModel.DataAnnotations;
+@inject IDocumentService Service
+@inject IJSRuntime js
+
+@inject NavigationManager NavigationManager;
+
+@*@attribute [Authorize]*@
+
+<link href="/css/alerts.css" rel="stylesheet" />
+
+<style>
+    .rightContainer {
+        text-align: right;
+    }
+
+    .cancelbuttonpink {
+        background-color: #f27c7c;
+        color: white;
+    }
+
+    .savebuttongreen {
+        background-color: #5bb154;
+        color: white;
+    }
+
+    .grayText {
+        color: #aaa8a8;
+    }
+
+    .blueText {
+        color: #18445b;
+        vertical-align: central;
+    }
+
+    .iconStep {
+        width: 40px;
+        height: 40px;
+    }
+</style>
+
+<div class="container-fluid ">
+
+    <section id="basic-form-layouts">
+        <div class="row match-height">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-content collapse show">
+                        <div class="card-body">
+                            <div class="card-text">
+                                <h1>Lista de documentos</h1>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <div class="d-flex justify-content-start">
+
+                                        <div class="mr-3">
+                                            @*<input placeholder="No. Reservación" @onchange="onChangeReservationNumber" class="form-control" />*@
+                                        </div>
+
+                                        <div class="mr-3">
+                                            @*<input placeholder="Nombre" @onchange="onChangeName" class="form-control" />*@
+                                        </div>
+
+                                        <div class="mr-3">
+                                            @*<input type="date" value="@InitialState.ToString("yyyy-MM-dd")" @onchange="onChangeInitDate" class="form-control" />*@
+                                        </div>
+
+                                        <div class="mr-3">
+                                            @*<input type="date" value="@FinalState.ToString("yyyy-MM-dd")" @onchange="onChangeFinalDate" class="form-control" />*@
+                                        </div>
+                                        <div class="mr-3"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div>
+                                        <div>
+                                            <div>
+                                                <button class="form-control" @onclick="Crear">Crear</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+</div>
+
+@if (EquiposList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="@EquiposList">
+        <DataAnnotationsValidator />
+        <div class="container-fluid ">
+            <section id="basic-form-layouts">
+                <div class="row match-height mt-3">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-content collapse show">
+                                <div class="card-body">
+                                    <RadzenDataGrid @ref="grid" Data="@EquiposList" TItem="Documentacion" AllowPaging="true" PageSize="10">
+                                        <Columns>
+                                            <RadzenDataGridColumn TItem="Documentacion" Title="Tipo de mantenimiento" TextAlign="TextAlign.Center">
+                                                <Template Context="Item">
+                                                    <label>@Item.Id</label>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                            <RadzenDataGridColumn TItem="Documentacion" Title="Observaciones" TextAlign="TextAlign.Center">
+                                                <Template Context="Item">
+                                                    <label>@Item.CreationDate</label>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                            <RadzenDataGridColumn TItem="Documentacion" Title="Acciones" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+                                                <Template Context="DynamicText">
+                                                    <RadzenSplitButton Icon="settings">
+                                                        <ChildContent>
+                                                            <RadzenSplitButtonItem Text="Ver" @onclick="()=>Ver(DynamicText)"></RadzenSplitButtonItem>
+                                                            <RadzenSplitButtonItem Text="Eliminar" @onclick="()=>Delete(DynamicText)"></RadzenSplitButtonItem>
+                                                        </ChildContent>
+                                                    </RadzenSplitButton>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                        </Columns>
+                                    </RadzenDataGrid>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </EditForm>
+}
+
+@code {
+    RadzenDataGrid<Domain.Entities.Documentacion> grid;
+
+    private List<Documentacion> EquiposList = new List<Documentacion>();
+    private List<Documentacion> EquiposList2 = new List<Documentacion>();
+    private Documentacion EquipoInput = new Documentacion();
+
+    private string search = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await Service.Get();
+        if (!response.Success)
+        {
+            return;
+        }
+        List<Documentacion> dto = JsonObjectToDto<List<Documentacion>>.GetDTO(response.Result);
+        EquiposList = dto;
+        EquiposList2 = dto;
+    }
+    void Ver(Documentacion dto)
+    {
+        NavigationManager.NavigateTo($"/DetalleDocumento/{dto.Id}", true);
+    }
+ 
+    async void Delete(Documentacion dto)
+    {
+        var obj = await js.QuestionAlert("Atención", $"¿Estas seguro de eliminar el campo?");
+        if (obj == null)
+        {
+            return;
+        }
+        var response = await Service.Delete(dto.Id);
+        if (!response.Success)
+        {
+            await js.ShowAlert("Atención", response.Errors.MessageSpanish);
+            return;
+        }
+        else
+        {
+            await js.ShowAlert("Atención", response.Message.MessageSpanish);
+            NavigationManager.NavigateTo($"/Documentos", true);
+        }
+    }
+    void Crear()
+    {
+        NavigationManager.NavigateTo($"/FileInput", true);
+    }
+
+ 
+
+
+
+
+}
+

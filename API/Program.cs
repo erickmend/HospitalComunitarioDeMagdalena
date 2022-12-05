@@ -49,6 +49,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IApplicationUserService, ApplicationUserService>();
 builder.Services.AddTransient<IEquiposService, EquipoService>();
 builder.Services.AddTransient<IMantenimientoService, MantenimientoService>();
+builder.Services.AddTransient<IDocumentacion, DocumentacionService>();
 
 var app = builder.Build();
 

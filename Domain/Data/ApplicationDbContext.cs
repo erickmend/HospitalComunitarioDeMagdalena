@@ -22,6 +22,7 @@ namespace Domain.Data
 
         public DbSet<Mantenimiento> Mantenimientos { get; set; }
         public DbSet<EquipoMedico> EquiposMedicos { get; set; }
+        public DbSet<Documentacion> Documentacion { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

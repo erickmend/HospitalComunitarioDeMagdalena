@@ -1,10 +1,39 @@
-﻿@page "/documentacion"
+﻿@page "/FileInput"
 @inject IFileUpload service
-
-<BlazorInputFile.InputFile OnChange="HandleFileSelected"></BlazorInputFile.InputFile>
+@using Radzen;
+@using Radzen.Blazor;
+@using System.Collections.Generic;
+@using System.Reflection;
+@using System.ComponentModel.DataAnnotations;
+@inject IDocumentService Service
+@inject IJSRuntime js
+@inject NavigationManager NavigationManager;
 
 @*<h1>Path: @path</h1>*@
-<img src="@imageSource" width="200" />
+
+
+
+
+    <div class="row">
+        <div class="col-lg-4 offset-lg-4 pt-4 pb-4 border">
+            <div class="mb-3 text-center">
+                <h3>Documentacion</h3>
+            </div>
+            <div class="mb-3">
+                <label>Subir documento</label>
+                <BlazorInputFile.InputFile OnChange="HandleFileSelected"></BlazorInputFile.InputFile>
+                    <img src="@imageSource" width="200" />
+            </div>
+
+
+            <div class="mb-3 d-grid gap-2">
+                <button @onclick="Authenticate" class="btn btn-primary">Crear</button>
+            </div>
+        </div>
+    </div>
+
+
+
 @code {
     string path = "";
     private string? imageSource;
@@ -21,5 +50,26 @@
             imageSource = Convert.ToBase64String(imageBytes);
             imageSource = string.Format("data:image/png;base64,{0}", imageSource);
         }
+    }
+
+
+        private async Task Authenticate()
+    { 
+        var Input = new Domain.DTOs.Documentacion.DocumentacionDTO{
+             Path = path
+        };
+        var response = await Service.Create(Input);
+        if (!response.Success)
+        {
+            await js.ShowAlert("Error", $"Hubo un error en la transacción");
+            return;
+        }
+        else
+        {
+            await js.ShowAlert("Exito", $"Se ha creado el documento");
+        }
+
+
+        NavigationManager.NavigateTo("/Documentos", true);
     }
 }
