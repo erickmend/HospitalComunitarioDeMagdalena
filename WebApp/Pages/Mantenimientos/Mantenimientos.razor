@@ -8,8 +8,8 @@
 @inject IJSRuntime js
 
 @inject NavigationManager NavigationManager;
+@*@attribute [Authorize(Roles = "Admin")]*@
 @attribute [Authorize(Roles = "Admin")]
-
 @*@attribute [Authorize]*@
 
 <link href="/css/alerts.css" rel="stylesheet" />
@@ -116,6 +116,18 @@ else
                                     <div class="card-body">
                                         <RadzenDataGrid @ref="grid" Data="@EquiposList" TItem="Mantenimiento" AllowPaging="true" PageSize="10">
                                             <Columns>
+
+                                                                                                <RadzenDataGridColumn TItem="Mantenimiento" Title="ID" TextAlign="TextAlign.Center">
+                                                    <Template Context="Item">
+                                                        <label>@Item.Id</label>
+                                                    </Template>
+                                                </RadzenDataGridColumn>
+
+                                            <RadzenDataGridColumn TItem="Mantenimiento" Title="Nombre equipo" TextAlign="TextAlign.Center">
+                                                <Template Context="Item">
+                                                    <label>@Item.EquipoMedico.NombreDelEquipo</label>
+                                                </Template>
+                                            </RadzenDataGridColumn>
                                                 <RadzenDataGridColumn TItem="Mantenimiento" Title="Tipo de mantenimiento" TextAlign="TextAlign.Center">
                                                     <Template Context="Item">
                                                         <label>@Item.TipoDeMtto</label>
@@ -140,11 +152,11 @@ else
                                                     </Template>
                                                 </RadzenDataGridColumn>
 
-                                                <RadzenDataGridColumn TItem="Mantenimiento" Title="ID EquipoMedico" TextAlign="TextAlign.Center">
+ @*                                               <RadzenDataGridColumn TItem="Mantenimiento" Title="ID EquipoMedico" TextAlign="TextAlign.Center">
                                                     <Template Context="Item">
                                                         <label>@Item.EquipoMedicoId</label>
                                                     </Template>
-                                                </RadzenDataGridColumn>
+                                                </RadzenDataGridColumn>*@
 
                                             @*  <RadzenDataGridColumn TItem="LasPalomas.Domain.Entities.Reserva" Title="Check-In" TextAlign="TextAlign.Center">
                                                 <Template Context="Item">

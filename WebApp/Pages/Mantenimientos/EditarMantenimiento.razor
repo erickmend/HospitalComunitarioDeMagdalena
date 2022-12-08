@@ -10,8 +10,8 @@
 @inject IJSRuntime js
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navManager
+@*@attribute [Authorize(Roles = "Admin")]*@
 @attribute [Authorize(Roles = "Admin")]
-
 <EditForm Model="@Input">
     <DataAnnotationsValidator />
     <div class="row">
@@ -51,7 +51,11 @@
             </div>
 
             <div class="mb-3">
-                <label>Equipo</label>
+                <label>ID Equipo</label>
+                <input class="form-control" disabled placeholder="@equipos.NumDeIdentificacion" />
+            </div>
+            <div class="mb-3">
+                <label>Nombre de Equipo</label>
                 <input class="form-control" disabled placeholder="@equipos.NombreDelEquipo" />
             </div>
 

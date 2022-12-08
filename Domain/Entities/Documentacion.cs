@@ -15,9 +15,17 @@ namespace Domain.Entities
         }
         public Documentacion(DocumentacionDTO dto)
         {
+            Nombre = dto.Nombre;
             Path = dto.Path;
             CreateEntity();
         }
+        public void Edit(DocumentacionDTO dto)
+        {
+            Nombre = dto.Nombre;
+            Path = dto.Path;
+            EditEntity();
+        }
         public string Path { get; set; }
+        public string Nombre { get; set; }
     }
 }

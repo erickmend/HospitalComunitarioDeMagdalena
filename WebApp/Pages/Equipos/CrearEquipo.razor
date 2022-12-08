@@ -9,8 +9,8 @@
 @inject IJSRuntime js
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navManager
+@*@attribute [Authorize(Roles = "Admin")]*@
 @attribute [Authorize(Roles = "Admin")]
-
 <EditForm Model="@Input">
     <DataAnnotationsValidator />
     <div class="row">
@@ -43,7 +43,7 @@
             </div>
             
                         <div class="mb-3">
-                <label>Fabricante</label>
+                <label>Marca/Fabricante</label>
                 <InputText placeholder="" class="form-control" @bind-Value="Input.Fabricante"> </InputText>
                 <ValidationMessage For="@(()=> Input.Fabricante)" />
             </div>
@@ -85,7 +85,7 @@
             </div>
 
             <div class="mb-3">
-                <label>Propiop o comodado</label>
+                <label>Propio o comodato</label>
                 <InputText placeholder="" class="form-control" @bind-Value="Input.PropioOComodato"> </InputText>
                 <ValidationMessage For="@(()=> Input.PropioOComodato)" />
             </div>

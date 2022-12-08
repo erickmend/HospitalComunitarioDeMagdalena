@@ -8,8 +8,8 @@
 @inject IJSRuntime js
 
 @inject NavigationManager NavigationManager;
+@*@attribute [Authorize(Roles = "Admin")]*@
 @attribute [Authorize(Roles = "Admin")]
-
 @*@attribute [Authorize]*@
 
 <link href="/css/alerts.css" rel="stylesheet" />
@@ -53,7 +53,7 @@
                     <div class="card-content collapse show">
                         <div class="card-body">
                             <div class="card-text">
-                                <h1>Lista de equipos</h1>
+                                <h1>INVENTARIO DE EQUIPOS MÉDICOS</h1>
                             </div>
 
                             <div class="d-flex justify-content-between">
@@ -116,31 +116,31 @@ else
                                 <div class="card-body">
                                     <RadzenDataGrid @ref="grid" Data="@EquiposList" TItem="EquipoMedico" AllowPaging="true" PageSize="10">
                                         <Columns>
-                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="NumDeIdentificacion" TextAlign="TextAlign.Center">
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="ID" TextAlign="TextAlign.Center">
                                                 <Template Context="Item">
                                                     <label>@Item.NumDeIdentificacion</label>
                                                 </Template>
                                             </RadzenDataGridColumn>
 
-                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="NombreDelEquipo" TextAlign="TextAlign.Center">
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="Nombre equipo" TextAlign="TextAlign.Center">
                                                 <Template Context="Item">
                                                     <label>@Item.NombreDelEquipo</label>
                                                 </Template>
                                             </RadzenDataGridColumn>
 
-                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="NombreDelCuadroBasico" TextAlign="TextAlign.Center">
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="Nombre CB" TextAlign="TextAlign.Center">
                                                 <Template Context="Item">
                                                     <label>@Item.NombreDelCuadroBasico</label>
                                                 </Template>
                                             </RadzenDataGridColumn>
 
-                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="ClaveDelCuadroBasico" TextAlign="TextAlign.Center">
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="Clave CB" TextAlign="TextAlign.Center">
                                                 <Template Context="Item">
                                                     <label>@Item.ClaveDelCuadroBasico</label>
                                                 </Template>
                                             </RadzenDataGridColumn>
 
-                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="Fabricante" TextAlign="TextAlign.Center">
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="Marca" TextAlign="TextAlign.Center">
                                                 <Template Context="Item">
                                                     <label>@Item.Fabricante</label>
                                                 </Template>
@@ -152,37 +152,37 @@ else
                                                 </Template>
                                             </RadzenDataGridColumn>
 
-                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="NumeroDeSerie" TextAlign="TextAlign.Center">
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="Num. de serie" TextAlign="TextAlign.Center">
                                                 <Template Context="Item">
                                                     <label>@Item.NumeroDeSerie</label>
                                                 </Template>
                                             </RadzenDataGridColumn>
 
-                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="UbicacionDelEquipo" TextAlign="TextAlign.Center">
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="Ubicación" TextAlign="TextAlign.Center">
                                                 <Template Context="Item">
                                                     <label>@Item.UbicacionDelEquipo</label>
                                                 </Template>
                                             </RadzenDataGridColumn>
 
-                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="EstatusOperativo" TextAlign="TextAlign.Center">
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="Estatus" TextAlign="TextAlign.Center">
                                                 <Template Context="Item">
                                                     <label>@Item.EstatusOperativo</label>
                                                 </Template>
                                             </RadzenDataGridColumn>
 
-                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="FechaInicialDeRegistro" TextAlign="TextAlign.Center">
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="Fecha registro" TextAlign="TextAlign.Center">
                                                 <Template Context="Item">
                                                     <label>@Item.FechaInicialDeRegistro</label>
                                                 </Template>
                                             </RadzenDataGridColumn>
 
-                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="InclusionDeMantenimiento" TextAlign="TextAlign.Center">
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="Inclusion mtto" TextAlign="TextAlign.Center">
                                                 <Template Context="Item">
                                                     <label>@Item.InclusionDeMantenimiento</label>
                                                 </Template>
                                             </RadzenDataGridColumn>
 
-                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="PropioOComodato" TextAlign="TextAlign.Center">
+                                            <RadzenDataGridColumn TItem="EquipoMedico" Title="Propietario" TextAlign="TextAlign.Center">
                                                 <Template Context="Item">
                                                     <label>@Item.PropioOComodato</label>
                                                 </Template>

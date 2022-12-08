@@ -1,5 +1,6 @@
 ﻿@page "/FileInput"
 @inject IFileUpload service
+@using Domain.DTOs.Documentacion
 @using Radzen;
 @using Radzen.Blazor;
 @using System.Collections.Generic;
@@ -8,14 +9,38 @@
 @inject IDocumentService Service
 @inject IJSRuntime js
 @inject NavigationManager NavigationManager;
+@*@attribute [Authorize(Roles = "Admin")]*@
 @attribute [Authorize(Roles = "Admin")]
-
 @*<h1>Path: @path</h1>*@
 
 
-
-
+<EditForm Model="@Input">
+    <DataAnnotationsValidator />
     <div class="row">
+        <div class="col-lg-4 offset-lg-4 pt-4 pb-4 border">
+            <div class="mb-3 text-center">
+                <h3>Documentación</h3>
+            </div>
+ 
+            <div class="mb-3">
+                <label>Formulario/bitácora</label>
+                <InputText placeholder="" class="form-control" @bind-Value="Input.Nombre"> </InputText>
+                <ValidationMessage For="@(()=> Input.Nombre)" />
+            </div>
+            <div class="mb-3">
+                <label>Subir documento</label>
+                <BlazorInputFile.InputFile OnChange="HandleFileSelected"></BlazorInputFile.InputFile>
+                <img src="@imageSource" width="200" />
+            </div>
+ 
+            <div class="mb-3 d-grid gap-2">
+                <button @onclick="Authenticate" class="btn btn-primary">Crear</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@*    <div class="row">
         <div class="col-lg-4 offset-lg-4 pt-4 pb-4 border">
             <div class="mb-3 text-center">
                 <h3>Documentacion</h3>
@@ -31,7 +56,7 @@
                 <button @onclick="Authenticate" class="btn btn-primary">Crear</button>
             </div>
         </div>
-    </div>
+    </div>*@
 
 
 
@@ -53,12 +78,16 @@
         }
     }
 
+    private DocumentacionDTO Input = new DocumentacionDTO();
 
         private async Task Authenticate()
     { 
-        var Input = new Domain.DTOs.Documentacion.DocumentacionDTO{
-             Path = path
-        };
+        if (!ModelValidator.ValidateModel(Input))
+            return;
+
+        Input.Path = path;
+        
+      
         var response = await Service.Create(Input);
         if (!response.Success)
         {

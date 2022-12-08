@@ -8,8 +8,8 @@
 @inject IJSRuntime js
 
 @inject NavigationManager NavigationManager;
+@*@attribute [Authorize(Roles = "Admin")]*@
 @attribute [Authorize(Roles = "Admin")]
-
 @*@attribute [Authorize]*@
 
 <link href="/css/alerts.css" rel="stylesheet" />
@@ -53,7 +53,7 @@
                     <div class="card-content collapse show">
                         <div class="card-body">
                             <div class="card-text">
-                                <h1>Lista de documentos</h1>
+                                <h1>DOCUMENTACIÓN</h1>
                             </div>
 
                             <div class="d-flex justify-content-between">
@@ -115,13 +115,17 @@ else
                                 <div class="card-body">
                                     <RadzenDataGrid @ref="grid" Data="@EquiposList" TItem="Documentacion" AllowPaging="true" PageSize="10">
                                         <Columns>
-                                            <RadzenDataGridColumn TItem="Documentacion" Title="Tipo de mantenimiento" TextAlign="TextAlign.Center">
+@*                                            <RadzenDataGridColumn TItem="Documentacion" Title="Tipo de mantenimiento" TextAlign="TextAlign.Center">
                                                 <Template Context="Item">
                                                     <label>@Item.Id</label>
                                                 </Template>
+                                            </RadzenDataGridColumn>*@
+                                            <RadzenDataGridColumn TItem="Documentacion" Title="Formulario/bitácora" TextAlign="TextAlign.Center">
+                                                <Template Context="Item">
+                                                    <label>@Item.Nombre</label>
+                                                </Template>
                                             </RadzenDataGridColumn>
-
-                                            <RadzenDataGridColumn TItem="Documentacion" Title="Observaciones" TextAlign="TextAlign.Center">
+                                            <RadzenDataGridColumn TItem="Documentacion" Title="Fecha" TextAlign="TextAlign.Center">
                                                 <Template Context="Item">
                                                     <label>@Item.CreationDate</label>
                                                 </Template>

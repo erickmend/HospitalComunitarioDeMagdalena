@@ -35,5 +35,6 @@ namespace Domain.Entities
             EditEntity();
         }
         public int EquipoMedicoId { get; set; }
+        public virtual EquipoMedico EquipoMedico { get; set; }
     }
 }

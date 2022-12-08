@@ -9,13 +9,17 @@
 @inject IJSRuntime js
 @inject NavigationManager NavigationManager;
 
+@*@attribute [Authorize(Roles = "Admin")]*@
 @attribute [Authorize(Roles = "Admin")]
-
 
 <div class="row">
     <div class="col-lg-4 offset-lg-4 pt-4 pb-4 border">
         <div class="mb-3 text-center">
             <h3>Detalle documento</h3>
+        </div>
+        <div class="mb-3">
+            <label>Formulario/bitácora</label>
+            <input placeholder="" class="form-control" value="@entity.Nombre" disabled/>
         </div>
         <div class="mb-3">
             <img src="@imageSource" width="500" />
@@ -29,6 +33,7 @@
     [Parameter]
     public string id { get; set; }
     private string? imageSource;
+    Documentacion entity = new Documentacion();
 
     protected override async Task OnInitializedAsync()
     {
@@ -39,7 +44,7 @@
             await js.ShowAlert("Error", response.Errors.MessageSpanish);
             return;
         }
-        Documentacion entity = JsonObjectToDto<Documentacion>.GetDTO(response.Result);
+        entity = JsonObjectToDto<Documentacion>.GetDTO(response.Result);
 
 
         var imageBytes = File.ReadAllBytes(entity.Path);

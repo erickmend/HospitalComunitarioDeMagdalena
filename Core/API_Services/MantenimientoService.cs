@@ -30,7 +30,26 @@ namespace Core.API_Services
             InternalStatusCodes internalStatus;
             try
             {
-                var response = await _dbContext.Mantenimientos.FirstOrDefaultAsync(x => x.Id == id && x.IsActive == true && x.IsDeleted == false);
+                var response = await _dbContext.Mantenimientos
+                    .Where(x => x.IsActive == true && x.IsDeleted == false)
+                    .Include(x => x.EquipoMedico)
+                    .Select(x => new Mantenimiento
+                    {
+                        Id = x.Id,
+                        FechaDeMtto = x.FechaDeMtto,
+                        TipoDeMtto = x.TipoDeMtto,
+                        Observaciones = x.Observaciones,
+                        Responsable = x.Responsable,
+                        IsActive = x.IsActive,
+                        IsDeleted = x.IsDeleted,
+                        EquipoMedicoId = x.EquipoMedicoId,
+                        EquipoMedico = new EquipoMedico
+                        {
+                            Id = x.EquipoMedico.Id,
+                            NombreDelEquipo = x.EquipoMedico.NombreDelEquipo,
+                        }
+                    })
+                    .FirstOrDefaultAsync(x => x.Id == id && x.IsActive == true && x.IsDeleted == false);
                 if (response == null)
                 {
                     internalStatus = InternalStatusCodes.GetEntity_ERROR;
@@ -52,7 +71,22 @@ namespace Core.API_Services
             InternalStatusCodes internalStatus;
             try
             {
-                var response = await _dbContext.Mantenimientos.Where(x => x.IsActive == true && x.IsDeleted == false).ToListAsync();
+                var response = await _dbContext.Mantenimientos.Where(x => x.IsActive == true && x.IsDeleted == false)
+                    .Include(x=>x.EquipoMedico)
+                    .Select(x => new Mantenimiento
+                    {
+                        Id = x.Id,
+                        FechaDeMtto = x.FechaDeMtto,
+                        TipoDeMtto = x.TipoDeMtto,
+                        Observaciones = x.Observaciones,
+                        Responsable = x.Responsable,
+                        EquipoMedico = new EquipoMedico
+                        {
+                            Id = x.EquipoMedico.Id,
+                            NombreDelEquipo = x.EquipoMedico.NombreDelEquipo,
+                        }
+                    })
+                    .ToListAsync();
                 if (response == null || response.Count() == 0)
                 {
                     internalStatus = InternalStatusCodes.GetList_ERROR;
@@ -91,6 +125,11 @@ namespace Core.API_Services
                     internalStatus = InternalStatusCodes.CreateEntity_ERROR;
                     return new Response<Mantenimiento>(internalStatus, null);
                 }
+                mantenimiento.EquipoMedico = new EquipoMedico
+                {
+                    Id = equipoResponse.Result.Id,
+                    NombreDelEquipo = equipoResponse.Result.NombreDelEquipo,
+                };
                 internalStatus = InternalStatusCodes.CreateEntity_Ok;
                 return new Response<Mantenimiento>(internalStatus, mantenimiento, mantenimiento);
             }
