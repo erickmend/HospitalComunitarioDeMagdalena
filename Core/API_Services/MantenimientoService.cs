@@ -22,7 +22,7 @@ namespace Core.API_Services
             _dbContext = context;
             _equiposService = equiposService;
         }
- 
+
 
 
         public async Task<Response<Mantenimiento>> GetMantenimiento(int id)
@@ -31,8 +31,8 @@ namespace Core.API_Services
             try
             {
                 var response = await _dbContext.Mantenimientos
-                    .Where(x => x.IsActive == true && x.IsDeleted == false)
                     .Include(x => x.EquipoMedico)
+                    .Where(x => x.IsActive == true && x.IsDeleted == false && x.EquipoMedico.IsActive==true && x.EquipoMedico.IsDeleted==false)
                     .Select(x => new Mantenimiento
                     {
                         Id = x.Id,
@@ -71,8 +71,9 @@ namespace Core.API_Services
             InternalStatusCodes internalStatus;
             try
             {
-                var response = await _dbContext.Mantenimientos.Where(x => x.IsActive == true && x.IsDeleted == false)
-                    .Include(x=>x.EquipoMedico)
+                var response = await _dbContext.Mantenimientos
+                    .Include(x => x.EquipoMedico)
+                    .Where(x => x.IsActive == true && x.IsDeleted == false && x.EquipoMedico.IsActive == true && x.EquipoMedico.IsDeleted == false)
                     .Select(x => new Mantenimiento
                     {
                         Id = x.Id,
@@ -80,10 +81,12 @@ namespace Core.API_Services
                         TipoDeMtto = x.TipoDeMtto,
                         Observaciones = x.Observaciones,
                         Responsable = x.Responsable,
+                        EquipoMedicoId = x.EquipoMedicoId,
                         EquipoMedico = new EquipoMedico
                         {
                             Id = x.EquipoMedico.Id,
                             NombreDelEquipo = x.EquipoMedico.NombreDelEquipo,
+                            NumDeIdentificacion= x.EquipoMedico.NumDeIdentificacion
                         }
                     })
                     .ToListAsync();
@@ -108,7 +111,7 @@ namespace Core.API_Services
             try
             {
                 var equipoResponse = await _equiposService.GetEquipo(EquipoId);
-                if (equipoResponse==null || equipoResponse.Result==null || !equipoResponse.Success || equipoResponse.Entity == null)
+                if (equipoResponse == null || equipoResponse.Result == null || !equipoResponse.Success || equipoResponse.Entity == null)
                 {
                     internalStatus = InternalStatusCodes.CreateEntity_ERROR;
                     return new Response<Mantenimiento>(internalStatus, null);
@@ -117,7 +120,7 @@ namespace Core.API_Services
                 Mantenimiento mantenimiento = new Mantenimiento(dto);
                 equipoResponse.Result.Mantenimientos.Add(mantenimiento);
                 mantenimiento.EquipoMedicoId = EquipoId;
-                
+
                 await _dbContext.Mantenimientos.AddAsync(mantenimiento);
                 int response = await _dbContext.SaveChangesAsync();
                 if (response == 0)
@@ -146,23 +149,29 @@ namespace Core.API_Services
                 InternalStatusCodes internalStatus;
                 try
                 {
-                    var entityResponse = await GetMantenimiento(id);
-                    if (!entityResponse.Success || entityResponse.Entity == null)
+                    var response = await _dbContext.Mantenimientos
+                           .Include(x => x.EquipoMedico)
+                            .FirstOrDefaultAsync(x => x.Id==id && x.IsActive == true && x.IsDeleted == false && x.EquipoMedico.IsActive == true && x.EquipoMedico.IsDeleted == false);
+
+
+                    if (response == null)
                     {
-                        return entityResponse;
+                        internalStatus = InternalStatusCodes.GetEntity_ERROR;
+                        return new Response<Mantenimiento>(internalStatus, new Mantenimiento());
                     }
 
-                    var entity = (Mantenimiento)entityResponse.Entity;
+                    var entity = response;
                     entity.Edit(mantenimiento);
 
-                    int response = await _dbContext.SaveChangesAsync();
-                    if (response == 0)
+                    int responsebf = await _dbContext.SaveChangesAsync();
+                    entity.EquipoMedico.Mantenimientos = null;
+                    if (responsebf == 0)
                     {
                         internalStatus = InternalStatusCodes.UpdateEntity_ERROR;
                         return new Response<Mantenimiento>(internalStatus, null);
                     }
                     internalStatus = InternalStatusCodes.UpdateEntity_Ok;
-                    return new Response<Mantenimiento>(internalStatus, entity, mantenimiento);
+                    return new Response<Mantenimiento>(internalStatus, entity, entity);
                 }
                 catch
                 {
@@ -177,22 +186,29 @@ namespace Core.API_Services
             InternalStatusCodes internalStatus;
             try
             {
-                var entityResponse = await GetMantenimiento(id);
-                if (!entityResponse.Success || entityResponse.Entity == null)
+                var response = await _dbContext.Mantenimientos
+                           .Include(x => x.EquipoMedico)
+                            .FirstOrDefaultAsync(x => x.Id == id && x.IsActive == true && x.IsDeleted == false && x.EquipoMedico.IsActive == true && x.EquipoMedico.IsDeleted == false);
+
+
+                if (response == null)
                 {
-                    return entityResponse;
+                    internalStatus = InternalStatusCodes.GetEntity_ERROR;
+                    return new Response<Mantenimiento>(internalStatus, new Mantenimiento());
                 }
-                var entity = (Mantenimiento)entityResponse.Entity;
+
+                var entity = response;
                 entity.Delete();
 
-                int response = await _dbContext.SaveChangesAsync();
-                if (response == 0)
+                int responsebf = await _dbContext.SaveChangesAsync();
+                entity.EquipoMedico.Mantenimientos = null;
+                if (responsebf == 0)
                 {
                     internalStatus = InternalStatusCodes.DeleteEntity_ERROR;
                     return new Response<Mantenimiento>(internalStatus, null);
                 }
                 internalStatus = InternalStatusCodes.DeleteEntity_Ok;
-                return new Response<Mantenimiento>(internalStatus, null, response);
+                return new Response<Mantenimiento>(internalStatus, entity, entity);
             }
             catch
             {

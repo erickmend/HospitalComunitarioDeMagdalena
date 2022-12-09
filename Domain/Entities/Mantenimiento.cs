@@ -19,6 +19,7 @@ namespace Domain.Entities
             TipoDeMtto = dto.TipoDeMtto;
             Observaciones = dto.Observaciones;
             Responsable = dto.Responsable;
+            EquipoMedicoId = dto.EquipoId;
             CreateEntity();
         }
         public DateTime FechaDeMtto { get; set; }

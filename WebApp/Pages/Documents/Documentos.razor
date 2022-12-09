@@ -137,6 +137,7 @@ else
                                                         <ChildContent>
                                                             <RadzenSplitButtonItem Text="Ver" @onclick="()=>Ver(DynamicText)"></RadzenSplitButtonItem>
                                                             <RadzenSplitButtonItem Text="Eliminar" @onclick="()=>Delete(DynamicText)"></RadzenSplitButtonItem>
+                                                            <RadzenSplitButtonItem Text="Imprimir" @onclick="()=>Print(DynamicText)"></RadzenSplitButtonItem>
                                                         </ChildContent>
                                                     </RadzenSplitButton>
                                                 </Template>
@@ -196,6 +197,13 @@ else
             await js.ShowAlert("Atención", response.Message.MessageSpanish);
             NavigationManager.NavigateTo($"/Documentos", true);
         }
+    }
+
+
+    async void Print(Documentacion dto)
+    {
+        var obj = await js.QuestionAlert("Atención", $"¿Deseas imprimir {dto.Nombre}?");
+        
     }
     void Crear()
     {
