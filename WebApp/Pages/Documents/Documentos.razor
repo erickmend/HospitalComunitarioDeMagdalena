@@ -84,6 +84,8 @@
                                             <div>
                                                 <button class="form-control" @onclick="Crear">Crear</button>
                                             </div>
+                                            <input placeholder="Buscar" @onchange="onChangeSearch" class="form-control" />
+
                                         </div>
                                     </div>
                                 </div>
@@ -127,7 +129,7 @@ else
                                             </RadzenDataGridColumn>
                                             <RadzenDataGridColumn TItem="Documentacion" Title="Fecha" TextAlign="TextAlign.Center">
                                                 <Template Context="Item">
-                                                    <label>@Item.CreationDate</label>
+                                                    <label>@Item.Fecha.ToString("dd/MM/yyyy")</label>
                                                 </Template>
                                             </RadzenDataGridColumn>
 
@@ -210,7 +212,30 @@ else
         NavigationManager.NavigateTo($"/FileInput", true);
     }
 
- 
+    private void onChangeSearch(Microsoft.AspNetCore.Components.ChangeEventArgs args)
+    {
+        if (EquiposList == null || EquiposList2 == null)
+            return;
+        try
+        {
+            search = (string)args.Value;
+            if (!string.IsNullOrEmpty(search))
+            {
+                EquiposList = EquiposList2.FindAll(x => x.Nombre.ToUpper().Contains(search.ToUpper())
+                 || x.Fecha.ToString("dd/MM/yyyy").ToUpper().Contains(search.ToUpper())
+                );
+            }
+            else
+            {
+                EquiposList = EquiposList2;
+            }
+        }
+        catch
+        {
+
+        }
+
+    }
 
 
 

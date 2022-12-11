@@ -12,5 +12,6 @@ namespace Domain.DTOs.Documentacion
         public string Path { get; set; }
         [Required(ErrorMessage = "El campo es requerido")]
         public string Nombre { get; set; }
+        public DateTime Fecha { get; set; }
     }
 }

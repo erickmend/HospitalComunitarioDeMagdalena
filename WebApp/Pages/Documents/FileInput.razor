@@ -28,6 +28,11 @@
                 <ValidationMessage For="@(()=> Input.Nombre)" />
             </div>
             <div class="mb-3">
+                <label>Fecha</label>
+                <InputDate placeholder="" class="form-control" @bind-Value="Input.Fecha"> </InputDate>
+                <ValidationMessage For="@(()=> Input.Fecha)" />
+            </div>
+            <div class="mb-3">
                 <label>Subir documento</label>
                 <BlazorInputFile.InputFile OnChange="HandleFileSelected"></BlazorInputFile.InputFile>
                 <img src="@imageSource" width="200" />
